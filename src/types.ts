@@ -4,6 +4,8 @@ export interface SonarQubeConfig {
   projectKey: string;
 }
 
+export type IssueType = 'BUG' | 'VULNERABILITY' | 'CODE_SMELL';
+
 export interface ReportOptions {
   output?: string;
   title?: string;
@@ -11,6 +13,7 @@ export interface ReportOptions {
   includeCoverage?: boolean;
   detail?: boolean;
   severities?: Severity[];
+  types?: IssueType[];
 }
 
 export type Severity = 'BLOCKER' | 'CRITICAL' | 'MAJOR' | 'MINOR' | 'INFO';

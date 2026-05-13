@@ -1,4 +1,4 @@
-import { SonarQubeConfig, Metric, Issue, ProjectStatus, Severity, SourceLine, RuleDetail } from './types';
+import { SonarQubeConfig, Metric, Issue, IssueType, ProjectStatus, Severity, SourceLine, RuleDetail } from './types';
 
 const DEFAULT_METRICS = [
   'bugs',
@@ -54,7 +54,7 @@ export class SonarQubeClient {
     }));
   }
 
-  async getIssues(options: { severities?: Severity[]; page?: number; pageSize?: number } = {}): Promise<{
+  async getIssues(options: { severities?: Severity[]; types?: IssueType[]; page?: number; pageSize?: number } = {}): Promise<{
     issues: Issue[];
     total: number;
   }> {
@@ -66,6 +66,9 @@ export class SonarQubeClient {
     };
     if (options.severities?.length) {
       params.severities = options.severities.join(',');
+    }
+    if (options.types?.length) {
+      params.types = options.types.join(',');
     }
 
     const data = await this.request<{
@@ -95,7 +98,7 @@ export class SonarQubeClient {
     };
   }
 
-  async getAllIssues(options: { severities?: Severity[] } = {}): Promise<Issue[]> {
+  async getAllIssues(options: { severities?: Severity[]; types?: IssueType[] } = {}): Promise<Issue[]> {
     const allIssues: Issue[] = [];
     let page = 1;
     const pageSize = 100;

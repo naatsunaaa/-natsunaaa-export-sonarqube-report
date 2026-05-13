@@ -38,6 +38,31 @@ npx @natsunaaa/export-sonarqube-report \
 | `--no-issues`             | Exclude issues from report                                |
 | `--detail`                | Include source snippets and rule descriptions             |
 | `--severities <list>`     | Filter by severity: `BLOCKER,CRITICAL,MAJOR,MINOR,INFO`   |
+| `--types <list>`          | Filter by issue type: `BUG,VULNERABILITY,CODE_SMELL`      |
+
+#### `--types` values
+
+| SonarQube Category | `--types` value  |
+| ------------------ | ---------------- |
+| Reliability        | `BUG`            |
+| Security           | `VULNERABILITY`  |
+| Maintainability    | `CODE_SMELL`     |
+
+#### Examples
+
+```bash
+# Reliability issues only
+npx @natsunaaa/export-sonarqube-report \
+  -u http://localhost:9000 -t <token> -k my-project --types BUG -o report.pdf
+
+# Security + Reliability
+npx @natsunaaa/export-sonarqube-report \
+  -u http://localhost:9000 -t <token> -k my-project --types BUG,VULNERABILITY -o report.pdf
+
+# Critical bugs only with source code details
+npx @natsunaaa/export-sonarqube-report \
+  -u http://localhost:9000 -t <token> -k my-project --types BUG --severities CRITICAL,BLOCKER --detail -o report.pdf
+```
 
 ### Library Usage
 
@@ -120,6 +145,31 @@ npx @natsunaaa/export-sonarqube-report \
 | `--no-issues`             | 이슈 목록 제외                                     |
 | `--detail`                | 소스코드 스니펫 및 룰 설명 포함                    |
 | `--severities <list>`     | 심각도 필터: `BLOCKER,CRITICAL,MAJOR,MINOR,INFO`   |
+| `--types <list>`          | 이슈 타입 필터: `BUG,VULNERABILITY,CODE_SMELL`     |
+
+#### `--types` 값 설명
+
+| SonarQube 카테고리 | `--types` 값     |
+| ------------------ | ---------------- |
+| Reliability        | `BUG`            |
+| Security           | `VULNERABILITY`  |
+| Maintainability    | `CODE_SMELL`     |
+
+#### 예시
+
+```bash
+# Reliability 이슈만
+npx @natsunaaa/export-sonarqube-report \
+  -u http://localhost:9000 -t <token> -k my-project --types BUG -o report.pdf
+
+# Security + Reliability
+npx @natsunaaa/export-sonarqube-report \
+  -u http://localhost:9000 -t <token> -k my-project --types BUG,VULNERABILITY -o report.pdf
+
+# Critical 버그만 + 소스코드 상세 포함
+npx @natsunaaa/export-sonarqube-report \
+  -u http://localhost:9000 -t <token> -k my-project --types BUG --severities CRITICAL,BLOCKER --detail -o report.pdf
+```
 
 ### 라이브러리 사용법
 
@@ -202,6 +252,31 @@ npx @natsunaaa/export-sonarqube-report \
 | `--no-issues`             | 不包含问题列表                                      |
 | `--detail`                | 包含源代码片段和规则说明                            |
 | `--severities <list>`     | 按严重程度过滤：`BLOCKER,CRITICAL,MAJOR,MINOR,INFO` |
+| `--types <list>`          | 按问题类型过滤：`BUG,VULNERABILITY,CODE_SMELL`      |
+
+#### `--types` 取值说明
+
+| SonarQube 分类 | `--types` 值     |
+| -------------- | ---------------- |
+| Reliability    | `BUG`            |
+| Security       | `VULNERABILITY`  |
+| Maintainability| `CODE_SMELL`     |
+
+#### 示例
+
+```bash
+# 仅 Reliability 问题
+npx @natsunaaa/export-sonarqube-report \
+  -u http://localhost:9000 -t <token> -k my-project --types BUG -o report.pdf
+
+# Security + Reliability
+npx @natsunaaa/export-sonarqube-report \
+  -u http://localhost:9000 -t <token> -k my-project --types BUG,VULNERABILITY -o report.pdf
+
+# 仅 Critical 级别的 Bug，包含源代码详情
+npx @natsunaaa/export-sonarqube-report \
+  -u http://localhost:9000 -t <token> -k my-project --types BUG --severities CRITICAL,BLOCKER --detail -o report.pdf
+```
 
 ### 作为库使用
 
