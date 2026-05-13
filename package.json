@@ -1,0 +1,35 @@
+{
+  "name": "@natsunaaa/export-sonarqube-report",
+  "version": "0.1.0",
+  "description": "Generate PDF reports from SonarQube Community Edition",
+  "license": "MIT",
+  "author": "",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "export-sonarqube-report": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/cli.js",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "pdfkit": "^0.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pdfkit": "^0.13.9",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
