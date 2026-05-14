@@ -13,10 +13,20 @@ export interface ReportOptions {
   includeCoverage?: boolean;
   detail?: boolean;
   severities?: Severity[];
+  impactSeverities?: ImpactSeverity[];
   types?: IssueType[];
 }
 
 export type Severity = 'BLOCKER' | 'CRITICAL' | 'MAJOR' | 'MINOR' | 'INFO';
+
+export type ImpactSeverity = 'HIGH' | 'MEDIUM' | 'LOW' | 'INFO';
+
+export type SoftwareQuality = 'SECURITY' | 'RELIABILITY' | 'MAINTAINABILITY';
+
+export interface Impact {
+  softwareQuality: SoftwareQuality;
+  severity: ImpactSeverity;
+}
 
 export interface Metric {
   key: string;
@@ -32,6 +42,7 @@ export interface Issue {
   message: string;
   line?: number;
   type: 'BUG' | 'VULNERABILITY' | 'CODE_SMELL';
+  impacts?: Impact[];
   snippet?: SourceLine[];
   ruleDescription?: RuleDetail;
 }

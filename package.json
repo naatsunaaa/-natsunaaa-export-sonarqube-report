@@ -1,9 +1,10 @@
 {
   "name": "@natsunaaa/export-sonarqube-report",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Generate PDF reports from SonarQube Community Edition",
   "license": "MIT",
-  "author": "",
+  "author": "natsunaaa",
+  "repository": "https://github.com/naatsunaaa/-natsunaaa-export-sonarqube-report",
   "type": "commonjs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

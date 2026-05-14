@@ -1,4 +1,4 @@
-import { SonarQubeConfig, Metric, Issue, IssueType, ProjectStatus, Severity, SourceLine, RuleDetail } from './types';
+import { SonarQubeConfig, Metric, Issue, IssueType, ProjectStatus, Severity, ImpactSeverity, SourceLine, RuleDetail, Impact } from './types';
 
 const DEFAULT_METRICS = [
   'bugs',
@@ -54,7 +54,7 @@ export class SonarQubeClient {
     }));
   }
 
-  async getIssues(options: { severities?: Severity[]; types?: IssueType[]; page?: number; pageSize?: number } = {}): Promise<{
+  async getIssues(options: { severities?: Severity[]; impactSeverities?: ImpactSeverity[]; types?: IssueType[]; page?: number; pageSize?: number } = {}): Promise<{
     issues: Issue[];
     total: number;
   }> {
@@ -66,6 +66,9 @@ export class SonarQubeClient {
     };
     if (options.severities?.length) {
       params.severities = options.severities.join(',');
+    }
+    if (options.impactSeverities?.length) {
+      params.impactSeverities = options.impactSeverities.join(',');
     }
     if (options.types?.length) {
       params.types = options.types.join(',');
@@ -80,6 +83,7 @@ export class SonarQubeClient {
         message: string;
         line?: number;
         type: 'BUG' | 'VULNERABILITY' | 'CODE_SMELL';
+        impacts?: Array<{ softwareQuality: string; severity: string }>;
       }>;
       total: number;
     }>('/api/issues/search', params);
@@ -93,12 +97,13 @@ export class SonarQubeClient {
         message: i.message,
         line: i.line,
         type: i.type,
+        impacts: i.impacts as Impact[] | undefined,
       })),
       total: data.total,
     };
   }
 
-  async getAllIssues(options: { severities?: Severity[]; types?: IssueType[] } = {}): Promise<Issue[]> {
+  async getAllIssues(options: { severities?: Severity[]; impactSeverities?: ImpactSeverity[]; types?: IssueType[] } = {}): Promise<Issue[]> {
     const allIssues: Issue[] = [];
     let page = 1;
     const pageSize = 100;

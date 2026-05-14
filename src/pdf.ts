@@ -1,6 +1,6 @@
 import PDFDocument from 'pdfkit';
 import { createWriteStream } from 'fs';
-import { Issue, Metric, ProjectStatus } from './types';
+import { Issue, Metric, ProjectStatus, Impact } from './types';
 
 interface PdfReportData {
   title: string;
@@ -28,6 +28,19 @@ const SEVERITY_COLORS: Record<string, string> = {
   MAJOR: '#fbbc04',
   MINOR: '#5f6368',
   INFO: '#1a73e8',
+};
+
+const IMPACT_SEVERITY_COLORS: Record<string, string> = {
+  HIGH: '#ea4335',
+  MEDIUM: '#fbbc04',
+  LOW: '#5f6368',
+  INFO: '#1a73e8',
+};
+
+const SOFTWARE_QUALITY_LABELS: Record<string, string> = {
+  SECURITY: 'Security',
+  RELIABILITY: 'Reliability',
+  MAINTAINABILITY: 'Maintainability',
 };
 
 const METRIC_LABELS: Record<string, string> = {
@@ -118,11 +131,31 @@ export async function generatePdf(data: PdfReportData, outputPath: string): Prom
       doc.fontSize(16).fillColor(COLORS.text).text(`Issues (${data.issues.length} open)`);
       doc.moveDown(0.5);
 
-      const bySeverity = groupBy(data.issues, (i) => i.severity);
-      for (const [severity, issues] of Object.entries(bySeverity)) {
-        doc.fontSize(12).fillColor(SEVERITY_COLORS[severity] ?? COLORS.text).text(`${severity}: ${issues.length}`);
+      // Software Quality breakdown (new SonarQube 10+ style)
+      const hasImpacts = data.issues.some((i) => i.impacts && i.impacts.length > 0);
+      if (hasImpacts) {
+        doc.fontSize(13).fillColor(COLORS.text).text('Software Quality');
+        doc.moveDown(0.3);
+        const byQuality = groupByImpactQuality(data.issues);
+        for (const [quality, count] of Object.entries(byQuality)) {
+          doc.fontSize(11).fillColor(COLORS.text).text(`  ${SOFTWARE_QUALITY_LABELS[quality] ?? quality}: ${count}`);
+        }
+        doc.moveDown(0.5);
+
+        doc.fontSize(13).fillColor(COLORS.text).text('Severity');
+        doc.moveDown(0.3);
+        const byImpactSeverity = groupByImpactSeverity(data.issues);
+        for (const [severity, count] of Object.entries(byImpactSeverity)) {
+          doc.fontSize(11).fillColor(IMPACT_SEVERITY_COLORS[severity] ?? COLORS.text).text(`  ${severity}: ${count}`);
+        }
+        doc.moveDown(0.5);
+      } else {
+        const bySeverity = groupBy(data.issues, (i) => i.severity);
+        for (const [severity, issues] of Object.entries(bySeverity)) {
+          doc.fontSize(12).fillColor(SEVERITY_COLORS[severity] ?? COLORS.text).text(`${severity}: ${issues.length}`);
+        }
+        doc.moveDown(0.5);
       }
-      doc.moveDown(0.5);
 
       const byType = groupBy(data.issues, (i) => i.type);
       for (const [type, issues] of Object.entries(byType)) {
@@ -139,8 +172,13 @@ export async function generatePdf(data: PdfReportData, outputPath: string): Prom
         ensureSpace(doc, 120);
 
         // Issue header
-        const color = SEVERITY_COLORS[issue.severity] ?? COLORS.text;
-        doc.fontSize(10).fillColor(color).text(`[${issue.severity}] [${issue.type}]`, { continued: true });
+        const impactLabel = issue.impacts?.length
+          ? issue.impacts.map((imp) => `${imp.severity}/${SOFTWARE_QUALITY_LABELS[imp.softwareQuality] ?? imp.softwareQuality}`).join(' ')
+          : issue.severity;
+        const color = issue.impacts?.length
+          ? (IMPACT_SEVERITY_COLORS[issue.impacts[0].severity] ?? COLORS.text)
+          : (SEVERITY_COLORS[issue.severity] ?? COLORS.text);
+        doc.fontSize(10).fillColor(color).text(`[${impactLabel}] [${issue.type}]`, { continued: true });
         doc.fillColor(COLORS.text).text(` ${issue.message}`);
 
         // File location
@@ -198,6 +236,30 @@ function groupBy<T>(arr: T[], fn: (item: T) => string): Record<string, T[]> {
   for (const item of arr) {
     const key = fn(item);
     (result[key] ??= []).push(item);
+  }
+  return result;
+}
+
+function groupByImpactQuality(issues: Issue[]): Record<string, number> {
+  const result: Record<string, number> = {};
+  for (const issue of issues) {
+    if (issue.impacts) {
+      for (const impact of issue.impacts) {
+        result[impact.softwareQuality] = (result[impact.softwareQuality] ?? 0) + 1;
+      }
+    }
+  }
+  return result;
+}
+
+function groupByImpactSeverity(issues: Issue[]): Record<string, number> {
+  const result: Record<string, number> = {};
+  for (const issue of issues) {
+    if (issue.impacts) {
+      for (const impact of issue.impacts) {
+        result[impact.severity] = (result[impact.severity] ?? 0) + 1;
+      }
+    }
   }
   return result;
 }
