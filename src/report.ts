@@ -14,7 +14,7 @@ export async function generateReport(config: SonarQubeConfig, options: ReportOpt
   ]);
 
   let issues = options.includeIssues !== false
-    ? await client.getAllIssues({ severities: options.severities, impactSeverities: options.impactSeverities, types: options.types })
+    ? await client.getAllIssues({ severities: options.severities, impactSeverities: options.impactSeverities, softwareQualities: options.softwareQualities, types: options.types })
     : [];
 
   if (issues.length > 0 && options.detail) {

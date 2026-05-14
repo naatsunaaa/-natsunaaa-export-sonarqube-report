@@ -14,6 +14,7 @@ export interface ReportOptions {
   detail?: boolean;
   severities?: Severity[];
   impactSeverities?: ImpactSeverity[];
+  softwareQualities?: SoftwareQuality[];
   types?: IssueType[];
 }
 

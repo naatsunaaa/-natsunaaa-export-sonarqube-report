@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import { generateReport } from './report';
-import { Severity, ImpactSeverity, IssueType } from './types';
+import { Severity, ImpactSeverity, IssueType, SoftwareQuality } from './types';
 
 const program = new Command();
 
@@ -18,6 +18,7 @@ program
   .option('--detail', 'Include source snippets and rule descriptions for each issue')
   .option('--severities <list>', 'Comma-separated severities: BLOCKER,CRITICAL,MAJOR,MINOR,INFO')
   .option('--impact-severities <list>', 'Comma-separated impact severities (SonarQube 10+): HIGH,MEDIUM,LOW,INFO')
+  .option('--software-qualities <list>', 'Comma-separated software qualities (SonarQube 10+): SECURITY,RELIABILITY,MAINTAINABILITY')
   .option('--types <list>', 'Comma-separated issue types: BUG,VULNERABILITY,CODE_SMELL')
   .action(async (opts) => {
     const token = opts.token === true ? process.env.SONAR_TOKEN : opts.token;
@@ -31,6 +32,9 @@ program
       : undefined;
     const impactSeverities = opts.impactSeverities
       ? (opts.impactSeverities.split(',') as ImpactSeverity[])
+      : undefined;
+    const softwareQualities = opts.softwareQualities
+      ? (opts.softwareQualities.split(',') as SoftwareQuality[])
       : undefined;
     const types = opts.types
       ? (opts.types.split(',') as IssueType[])
@@ -50,6 +54,7 @@ program
           detail: opts.detail ?? false,
           severities,
           impactSeverities,
+          softwareQualities,
           types,
         },
       );

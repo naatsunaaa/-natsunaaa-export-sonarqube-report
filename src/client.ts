@@ -54,7 +54,7 @@ export class SonarQubeClient {
     }));
   }
 
-  async getIssues(options: { severities?: Severity[]; impactSeverities?: ImpactSeverity[]; types?: IssueType[]; page?: number; pageSize?: number } = {}): Promise<{
+  async getIssues(options: { severities?: Severity[]; impactSeverities?: ImpactSeverity[]; softwareQualities?: string[]; types?: IssueType[]; page?: number; pageSize?: number } = {}): Promise<{
     issues: Issue[];
     total: number;
   }> {
@@ -69,6 +69,9 @@ export class SonarQubeClient {
     }
     if (options.impactSeverities?.length) {
       params.impactSeverities = options.impactSeverities.join(',');
+    }
+    if (options.softwareQualities?.length) {
+      params.impactSoftwareQualities = options.softwareQualities.join(',');
     }
     if (options.types?.length) {
       params.types = options.types.join(',');
@@ -103,7 +106,7 @@ export class SonarQubeClient {
     };
   }
 
-  async getAllIssues(options: { severities?: Severity[]; impactSeverities?: ImpactSeverity[]; types?: IssueType[] } = {}): Promise<Issue[]> {
+  async getAllIssues(options: { severities?: Severity[]; impactSeverities?: ImpactSeverity[]; softwareQualities?: string[]; types?: IssueType[] } = {}): Promise<Issue[]> {
     const allIssues: Issue[] = [];
     let page = 1;
     const pageSize = 100;
