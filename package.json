@@ -1,6 +1,6 @@
 {
   "name": "@natsunaaa/export-sonarqube-report",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Generate PDF reports from SonarQube Community Edition",
   "license": "MIT",
   "author": "natsunaaa",
@@ -31,6 +31,16 @@
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
   },
+  "keywords": [
+    "sonarqube",
+    "sonar",
+    "report",
+    "pdf",
+    "code-quality",
+    "static-analysis",
+    "quality-gate",
+    "community-edition"
+  ],
   "engines": {
     "node": ">=18"
   }
